@@ -1,31 +1,35 @@
-const items= document.getElementById('items')
-const templateCard= document.getElementById('template-card').content
-const fragment = document.createDocumentFragment()
+const vehiculosEnVenta = JSON.parse(localStorage.getItem('vehiculos')) || [];
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetchData()
-})
-6
-const fechData = async () => {
-  try{
-    const res=await fetch ('api.json')
-    const data=  await res.json()
-    mostrarCars(data)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
+        function guardarVehiculosEnLocalStorage() {
+            localStorage.setItem('vehiculos', JSON.stringify(vehiculosEnVenta));
+        }
 
-  const mostrarCars = data => {
-    data.forEach(producto=> {
-      templeateCard.querySelector('h5').textContent = producto.title
-      
-      const clone = templateCard.cloneMode(true)
-      fragment.appendChild(clone)
+        function agregarVehiculo() {
+            const marca = document.getElementById('marca').value;
+            const modelo = document.getElementById('modelo').value;
+            const color = document.getElementById('color').value;
+            const precio = parseFloat(document.getElementById('precio').value);
+            const anio = parseInt(document.getElementById('anio').value);
 
-    })
-    items.appendChild(fragment)
-  }
+            const vehiculo = { marca, modelo, color, precio, anio };
+            vehiculosEnVenta.push(vehiculo);
 
+            guardarVehiculosEnLocalStorage();
+            actualizarListaVehiculosEnDOM();
+            document.getElementById('vehiculo-form').reset();
 
+            console.log("Vehículo agregado con éxito.");
+        }
+
+        function actualizarListaVehiculosEnDOM() {
+            const vehiculosList = document.getElementById('vehiculos-list');
+            vehiculosList.innerHTML = '';
+
+            vehiculosEnVenta.forEach((vehiculo, i) => {
+                const vehiculoItem = document.createElement('div');
+                vehiculoItem.innerHTML = `<p>[${i + 1}] Marca: ${vehiculo.marca}, Modelo: ${vehiculo.modelo}, Color: ${vehiculo.color}, Precio: $${vehiculo.precio}, Año: ${vehiculo.anio}</p>`;
+                vehiculosList.appendChild(vehiculoItem);
+            });
+        }
+
+        actualizarListaVehiculosEnDOM();
